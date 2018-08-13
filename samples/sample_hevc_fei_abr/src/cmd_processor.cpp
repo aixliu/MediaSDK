@@ -91,6 +91,9 @@ void PrintHelp(const msdk_char *strErrorMessage)
     msdk_printf(MSDK_STRING("   [-MVPBlockSize size]    - parse input MV predictor buffer (from DSO) as having: \n"));
     msdk_printf(MSDK_STRING("                             0 - no MVP, 1 - MVP per 16x16 block, 2 - MVP per 32x32 block, 7 - MVP block size specified in the MVP structs (default) \n"));
     msdk_printf(MSDK_STRING("   [-ForceCtuSplit] - force splitting CTU into CU at least once\n"));
+    msdk_printf(MSDK_STRING("   [-ForceCtuSplit:I] - force splitting CTU into CU at least once on I-frames only\n"));
+    msdk_printf(MSDK_STRING("   [-ForceCtuSplit:P] - force splitting CTU into CU at least once on P/GPB-frames only\n"));
+    msdk_printf(MSDK_STRING("   [-ForceCtuSplit:B] - force splitting CTU into CU at least once on B-frames only\n"));
     msdk_printf(MSDK_STRING("   [-NumFramePartitions num] - number of partitions in frame that encoder processes concurrently (1, 2, 4, 8 or 16)\n"));
     msdk_printf(MSDK_STRING("   [-FastIntra:I] - force encoder to skip HEVC-specific intra modes (use AVC modes only) on I-frames\n"));
     msdk_printf(MSDK_STRING("   [-FastIntra:P] - force encoder to skip HEVC-specific intra modes (use AVC modes only) on P/GPB-frames\n"));
@@ -522,7 +525,19 @@ mfxStatus CmdProcessor::ParseParamsForOneSession(mfxU32 argc, msdk_char* argv[])
         }
         else if (0 == msdk_strcmp(argv[i], MSDK_STRING("-ForceCtuSplit")))
         {
-            params.encodeCtrl.ForceCtuSplit = 1;
+            params.frameCtrl.CtrlI.ForceCtuSplit = params.frameCtrl.CtrlP.ForceCtuSplit = params.frameCtrl.CtrlB.ForceCtuSplit = 1;
+        }
+        else if (0 == msdk_strcmp(argv[i], MSDK_STRING("-ForceCtuSplit:I")))
+        {
+            params.frameCtrl.CtrlI.ForceCtuSplit = 1;
+        }
+        else if (0 == msdk_strcmp(argv[i], MSDK_STRING("-ForceCtuSplit:P")))
+        {
+            params.frameCtrl.CtrlP.ForceCtuSplit = 1;
+        }
+        else if (0 == msdk_strcmp(argv[i], MSDK_STRING("-ForceCtuSplit:B")))
+        {
+            params.frameCtrl.CtrlB.ForceCtuSplit = 1;
         }
         else if (0 == msdk_strcmp(argv[i], MSDK_STRING("-NumFramePartitions")))
         {
