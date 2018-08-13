@@ -54,6 +54,20 @@ struct SourceFrameInfo
     }
 };
 
+struct PerTypeCtrl
+{
+    mfxExtFeiHevcEncFrameCtrl   CtrlI;
+    mfxExtFeiHevcEncFrameCtrl   CtrlP; // also applicable for GPB frames
+    mfxExtFeiHevcEncFrameCtrl   CtrlB;
+
+    PerTypeCtrl()
+    {
+        MSDK_ZERO_MEMORY(CtrlI);
+        MSDK_ZERO_MEMORY(CtrlP);
+        MSDK_ZERO_MEMORY(CtrlB);
+    }
+};
+
 enum BRC_TYPE
 {
     NONE      = 0,
@@ -115,15 +129,13 @@ struct sInputParams
     bool   bDisableQPOffset;   // disable qp offset per pyramid layer
     bool   drawMVP;
     bool   dumpMVP;
-    mfxU16 fastIntraModeOnI;
-    mfxU16 fastIntraModeOnP;
-    mfxU16 fastIntraModeOnB;
 
     PipelineMode pipeMode;
 
     sBrcParams sBRCparams;
 
     mfxExtFeiHevcEncFrameCtrl   encodeCtrl;
+    PerTypeCtrl   frameCtrl;
 
     sInputParams()
         : bEncodedOrder(true)
@@ -147,9 +159,6 @@ struct sInputParams
         , bDisableQPOffset(false)
         , drawMVP(false)
         , dumpMVP(false)
-        , fastIntraModeOnI(0)
-        , fastIntraModeOnP(0)
-        , fastIntraModeOnB(0)
         , pipeMode(Full)
         , sBRCparams()
     {
@@ -164,6 +173,9 @@ struct sInputParams
         // enable internal L0/L1 predictors: 1 - spatial predictors
         encodeCtrl.MultiPred[0] = encodeCtrl.MultiPred[1] = 1;
         encodeCtrl.MVPredictor = 7;
+
+        frameCtrl.CtrlI = frameCtrl.CtrlP = frameCtrl.CtrlB = encodeCtrl;
+        frameCtrl.CtrlI.MVPredictor = 0;
     }
 };
 

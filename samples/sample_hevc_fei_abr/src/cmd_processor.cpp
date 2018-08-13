@@ -93,7 +93,7 @@ void PrintHelp(const msdk_char *strErrorMessage)
     msdk_printf(MSDK_STRING("   [-ForceCtuSplit] - force splitting CTU into CU at least once\n"));
     msdk_printf(MSDK_STRING("   [-NumFramePartitions num] - number of partitions in frame that encoder processes concurrently (1, 2, 4, 8 or 16)\n"));
     msdk_printf(MSDK_STRING("   [-FastIntra:I] - force encoder to skip HEVC-specific intra modes (use AVC modes only) on I-frames\n"));
-    msdk_printf(MSDK_STRING("   [-FastIntra:P] - force encoder to skip HEVC-specific intra modes (use AVC modes only) on P-frames\n"));
+    msdk_printf(MSDK_STRING("   [-FastIntra:P] - force encoder to skip HEVC-specific intra modes (use AVC modes only) on P/GPB-frames\n"));
     msdk_printf(MSDK_STRING("   [-FastIntra:B] - force encoder to skip HEVC-specific intra modes (use AVC modes only) on B-frames\n"));
     msdk_printf(MSDK_STRING("   [-gpb:<on,off>]  - make HEVC encoder use regular P-frames (off) or GPB (on) (on - by default)\n"));
     msdk_printf(MSDK_STRING("   [-ppyr:<on,off>] - enables P-pyramid\n"));
@@ -531,15 +531,15 @@ mfxStatus CmdProcessor::ParseParamsForOneSession(mfxU32 argc, msdk_char* argv[])
         }
         else if (0 == msdk_strcmp(argv[i], MSDK_STRING("-FastIntra:I")))
         {
-            params.fastIntraModeOnI = 1;
+            params.frameCtrl.CtrlI.FastIntraMode = 1;
         }
         else if (0 == msdk_strcmp(argv[i], MSDK_STRING("-FastIntra:P")))
         {
-            params.fastIntraModeOnP = 1;
+            params.frameCtrl.CtrlP.FastIntraMode = 1;
         }
         else if (0 == msdk_strcmp(argv[i], MSDK_STRING("-FastIntra:B")))
         {
-            params.fastIntraModeOnB = 1;
+            params.frameCtrl.CtrlB.FastIntraMode = 1;
         }
         else if (0 == msdk_strcmp(argv[i], MSDK_STRING("-gop_opt")))
         {
